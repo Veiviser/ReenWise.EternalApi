@@ -24,6 +24,7 @@ namespace ReenWise.ExternalApi
         protected override void OnStart(string[] args)
         {
             // TODO: Add code here to start your service.
+
             token = AuthenticateToken.GetToken();
 
             Timer timer = new Timer();

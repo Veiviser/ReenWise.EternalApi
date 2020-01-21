@@ -11,6 +11,7 @@ namespace ReenWise.ExternalApi.Authentication
 {
     public class AuthenticateToken
     {
+        private static int authenticateFailureCount = 0;
         public static AccessToken GetToken()
         {
             try
@@ -30,9 +31,27 @@ namespace ReenWise.ExternalApi.Authentication
 
                 IRestResponse response = client.Execute(request);
 
-                var accessToken = JsonConvert.DeserializeObject<AccessToken>(response.Content);
+                if (response.IsSuccessful)
+                {
+                    var accessToken = JsonConvert.DeserializeObject<AccessToken>(response.Content);
 
-                return accessToken;
+                    return accessToken;
+                }
+                if (!response.IsSuccessful && authenticateFailureCount <= 3)
+                {
+                    authenticateFailureCount++;
+                    GetToken();
+                    if (response.IsSuccessful)
+                    {
+                        var accessToken = JsonConvert.DeserializeObject<AccessToken>(response.Content);
+
+                        return accessToken;
+                    }
+                }
+                else
+                {
+                    throw new Exception("Unable to collect access token");
+                }
             }
             catch (Exception e)
             {

@@ -30,6 +30,14 @@ namespace ReenWise.ExternalApi
                     var request = new RestRequest(Method.POST);
                     var response = clientDestination.Execute(request);
 
+                    if (response.IsSuccessful)
+                    {
+                        // TODO: The actual posting goes here.
+                    }
+                    else
+                    {
+                        throw new Exception("Unable to post data to: " + destination + "external API.");
+                    }
 
                 }
             }
